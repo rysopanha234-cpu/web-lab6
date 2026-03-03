@@ -1,0 +1,155 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Register Page</title>
+  <link href="https://cdn.jsdelivr.net/npm/daisyui@latest/dist/full.css" rel="stylesheet" type="text/css" />
+  <script src="https://cdn.tailwindcss.com"></script>
+</head>
+<body class="bg-fixed bg-cover bg-center p-10 font-serif min-h-screen" 
+      style="background-image: linear-gradient(rgba(86, 124, 62, 0.6), rgba(86, 124, 62, 0.6)), url('https://images.alphacoders.com/513/513812.jpg');"></body>
+
+<div class="max-w-2xl mx-auto">
+
+  <div class="card bg-[#fdf6e3] shadow-2xl p-6 mb-6 border-t-8 border-[#8ba870]">
+    <h2 class="text-2xl font-bold mb-4 text-[#3a522a]">Register User</h2>
+    
+    <div class="flex items-center mb-4">
+        <p id="welcome" class="mb-4 text-[#567c3e] font-semibold italic"></p>
+        <button class="btn border-none bg-[#e63946] text-white hover:bg-red-700 ml-auto" onclick="logout()">Logout</button>
+    </div>
+
+    <div class="form-control mb-3">
+      <label class="label text-[#3a522a] font-bold">Full Name</label>
+      <input type="text" id="fullName" class="input input-bordered bg-white border-[#8ba870] focus:border-[#567c3e]">
+    </div>
+
+    <div class="form-control mb-3">
+      <label class="label text-[#3a522a] font-bold">Email</label>
+      <input type="email" id="email" class="input input-bordered bg-white border-[#8ba870] focus:border-[#567c3e]">
+    </div>
+
+    <div class="form-control mb-3">
+      <label class="label text-[#3a522a] font-bold">Phone</label>
+      <input type="text" id="phone" class="input input-bordered bg-white border-[#8ba870] focus:border-[#567c3e]">
+    </div>
+
+    <div class="flex w-full gap-2 mt-5">
+        <button class="btn bg-[#ff79c6] text-white border-none flex-1" onclick="clearForm()">Clear</button>
+        <button class="btn bg-[#6272a4] text-white border-none flex-1" onclick="registerUser()">Register</button>
+    </div>
+  </div>
+
+  <div class="card bg-[#fdf6e3] shadow-2xl p-6 border-l-8 border-[#8ba870]">
+    <h3 class="text-xl font-bold mb-4 text-[#3a522a]">Registered Users</h3>
+    <div id="userTable" class="overflow-x-auto text-[#3a522a]"></div>
+  </div>
+
+</div>
+
+<script>
+function getCookie(name) {
+  let nameEQ = name + "=";
+  let cookies = document.cookie.split(';');
+  for(let i = 0; i < cookies.length; i++) {
+    let c = cookies[i].trim();
+    if (c.indexOf(nameEQ) === 0) return c.substring(nameEQ.length);
+  }
+  return null;
+}
+
+function deleteCookie(name) {
+  document.cookie = name + '=; Max-Age=0; path=/';
+}
+
+window.onload = function() {
+  let username = getCookie("username");
+  if(!username){
+    window.location.href = "login.html"; 
+  } else {
+    document.getElementById("welcome").innerText = "Welcome, " + username;
+  }
+  displayUsers();
+}
+
+function registerUser() {
+  let fullName = document.getElementById("fullName").value;
+  let email = document.getElementById("email").value;
+  let phone = document.getElementById("phone").value;
+
+  if(fullName === "" || email === "" || phone === ""){
+    alert("Please fill all fields");
+    return;
+  }
+
+  let newUser = { fullName: fullName, email: email, phone: phone };
+  let users = localStorage.getItem("users");
+  users = users ? JSON.parse(users) : [];
+  users.push(newUser);
+  localStorage.setItem("users", JSON.stringify(users));
+
+  alert("User registered successfully!");
+  clearForm();
+  displayUsers();
+}
+
+function displayUsers(){
+  let users = localStorage.getItem("users");
+  if(!users || JSON.parse(users).length === 0){
+    document.getElementById("userTable").innerHTML = "<p class='italic text-[#567c3e]'>No users yet.</p>";
+    return;
+  }
+
+  users = JSON.parse(users);
+  let table = `
+    <table class="table w-full bg-white rounded-lg">
+      <thead>
+        <tr class="bg-[#8ba870] text-white">
+          <th>Full Name</th>
+          <th>Email</th>
+          <th>Phone</th>
+          <th>Action</th>
+        </tr>
+      </thead>
+      <tbody>
+  `;
+
+  users.forEach((user, index) => {
+    table += `
+      <tr class="hover:bg-[#8ba870]/20 transition-colors">
+        <td>${user.fullName}</td>
+        <td>${user.email}</td>
+        <td>${user.phone}</td>
+        <td>
+          <button class="btn btn-xs bg-[#ff5555] border-none text-white hover:bg-red-700" onclick="deleteUser(${index})">
+            Delete
+          </button>
+        </td>
+      </tr>
+    `;
+  });
+
+  table += `</tbody></table>`;
+  document.getElementById("userTable").innerHTML = table;
+}
+
+function clearForm(){
+  document.getElementById("fullName").value = "";
+  document.getElementById("email").value = "";
+  document.getElementById("phone").value = "";
+}
+
+function deleteUser(index){
+  let users = JSON.parse(localStorage.getItem("users"));
+  users.splice(index, 1);
+  localStorage.setItem("users", JSON.stringify(users));
+  displayUsers();
+}
+
+function logout(){
+  deleteCookie("username");
+  window.location.href = "login.html"; 
+}
+</script>
+</body>
+</html>

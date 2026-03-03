@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <title>Login Page</title>
+    <script src="https://cdn.tailwindcss.com"></script>
+</head>
+
+<body class="bg-cover bg-center bg-no-repeat flex items-center justify-center h-screen font-serif"
+    style="background-image: linear-gradient(rgba(86, 124, 62, 0.6), rgba(86, 124, 62, 0.6)), url('https://images.alphacoders.com/513/513812.jpg');">
+
+    <div class="text-center">
+        <div class="bg-[#fdf6e3] p-8 rounded-3xl shadow-2xl w-96 border-t-8 border-[#8ba870]">
+            <div class="mb-6">
+                <h3 class="text-[#3a522a] text-2xl font-bold">Welcome Back</h3>
+                <p class="text-[#567c3e] text-sm italic">login to your account</p>
+            </div>
+
+            <div class="space-y-4 text-left">
+                <div>
+                    <label class="text-[#567c3e] text-sm font-bold ml-1">Username</label>
+                    <input type="text" id="username" placeholder="Enter username"
+                        class="w-full bg-white border border-[#8ba870] p-3 rounded-2xl outline-none focus:ring-2 focus:ring-[#567c3e] transition">
+                </div>
+                <div>
+                    <label class="text-[#567c3e] text-sm font-bold ml-1">Password</label>
+                    <input type="password" id="password" placeholder="Enter password"
+                        class="w-full bg-white border border-[#8ba870] p-3 rounded-2xl outline-none">
+                </div>
+                <button onclick="doLogin()"
+                    class="w-full bg-[#567c3e] hover:bg-[#3a522a] text-[#fdf6e3] font-bold py-3 rounded-2xl transition-all shadow-lg active:scale-95">
+                    Login
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        function setCookie(name, value) {
+            document.cookie = name + "=" + value + "; path=/; max-age=86400";
+        }
+
+        function doLogin() {
+            let user = document.getElementById("username").value;
+            if (user.trim() === "") {
+                alert("Please enter a username");
+                return;
+            }
+            setCookie("username", user);
+            window.location.href = "register.html";
+        }
+
+        window.onload
